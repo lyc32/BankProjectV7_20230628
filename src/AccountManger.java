@@ -42,15 +42,9 @@ public class AccountManger extends Account implements UserOperation
                 break;
             }
         }
-
         System.out.println("Please input User password:");
         String password = scanner.next();
-        System.out.println("Please input E-mail ID:");
-        String email = scanner.next();
-        System.out.println("Please input phone number");
-        phoneNumber.create(scanner);
-        System.out.println("Please input Address");
-        address.create(scanner);
+
         System.out.println("Please input User balance:");
         Double balance = 0.0;
         for(;true;)
@@ -67,12 +61,52 @@ public class AccountManger extends Account implements UserOperation
             }
         }
 
-        AccountCustomerPersonal newUser = new AccountCustomerPersonal(id, password, name, balance);
-        newUser.setPhoneNumber(phoneNumber);
-        newUser.setEmail(email);
-        newUser.setAddress(address);
-        dataBase.personalAccountList.add(newUser);
-        newUser.print();
+        int type;
+        for(;true;)
+        {
+            System.out.println("Please Select account type:\n 1.personal account\n 2.business account");
+            try
+            {
+                type= scanner.nextInt();
+                if(type == 1 || type == 2)
+                {
+                    break;
+                }
+                else
+                {
+                    System.out.println("You enter a wrong number, please try again\n");
+                }
+            }
+            catch (InputMismatchException e)
+            {
+                System.out.println("Please input a number, try again\n");
+                scanner.next();
+            }
+        }
+        if(type ==1)
+        {
+            System.out.println("Please input E-mail ID:");
+            String email = scanner.next();
+            System.out.println("Please input phone number");
+            phoneNumber.create(scanner);
+            System.out.println("Please input Address");
+            address.create(scanner);
+            AccountCustomerPersonal newUser = new AccountCustomerPersonal(id, password, name, balance);
+            newUser.setPhoneNumber(phoneNumber);
+            newUser.setEmail(email);
+            newUser.setAddress(address);
+            dataBase.personalAccountList.add(newUser);
+            newUser.print();
+        }
+        else
+        {
+            System.out.println("Please input Address");
+            String stringAddress = scanner.next();
+            AccountCustomerBusiness newUser = new AccountCustomerBusiness(id, password, name, balance);
+            newUser.setAddress(stringAddress);
+            dataBase.businessAccountList.add(newUser);
+            newUser.print();
+        }
     }
 
     @Override
@@ -92,50 +126,59 @@ public class AccountManger extends Account implements UserOperation
         Account targetAccount = searchUser(id,dataBase);
         if(targetAccount != null)
         {
-            System.out.println("Please select the which one you want to edit?\n 1.Address\n 2.phone Number\n 3.Email ID");
-            int choose = -1;
-            for(;true;)
+            if(targetAccount instanceof AccountCustomerPersonal)
             {
-                try
+                System.out.println("Please select the which one you want to edit?\n 1.Address\n 2.phone Number\n 3.Email ID");
+                int choose = -1;
+                for(;true;)
                 {
-                    choose= scanner.nextInt();
-                    if(choose == 1 || choose == 2 || choose == 3)
+                    try
                     {
-                        break;
+                        choose= scanner.nextInt();
+                        if(choose == 1 || choose == 2 || choose == 3)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            System.out.println("You enter a wrong number, please try again\n");
+                        }
                     }
-                    else
+                    catch (InputMismatchException e)
                     {
-                        System.out.println("You enter a wrong number, please try again\n");
+                        System.out.println("Please input a number, try again\n");
+                        scanner.next();
                     }
                 }
-                catch (InputMismatchException e)
+
+                if(choose == 1)
                 {
-                    System.out.println("Please input a number, try again\n");
-                    scanner.next();
+                    Address address = new Address();
+                    address.create(scanner);
+                    ((AccountCustomerPersonal)targetAccount).setAddress(address);
                 }
-            }
 
-            if(choose == 1)
-            {
-                Address address = new Address();
-                address.create(scanner);
-                ((AccountCustomerPersonal)targetAccount).setAddress(address);
-            }
+                else if(choose == 2)
+                {
+                    PhoneNumber phoneNumber = new PhoneNumber();
+                    phoneNumber.create(scanner);
+                    ((AccountCustomerPersonal)targetAccount).setPhoneNumber(phoneNumber);
+                }
+                else
+                {
+                    System.out.println("Please input new Email Id:");
+                    ((AccountCustomerPersonal)targetAccount).setEmail(scanner.next());
+                }
 
-            else if(choose == 2)
-            {
-                PhoneNumber phoneNumber = new PhoneNumber();
-                phoneNumber.create(scanner);
-                ((AccountCustomerPersonal)targetAccount).setPhoneNumber(phoneNumber);
+                System.out.println("User Info Update Successful\n");
+                targetAccount.print();
             }
             else
             {
-                System.out.println("Please input new Email Id:");
-                ((AccountCustomerPersonal)targetAccount).setEmail(scanner.next());
+                System.out.println("Please input new address:");
+                String stringAddress = scanner.next();
+                ((AccountCustomerBusiness)targetAccount).setAddress(stringAddress);
             }
-
-            System.out.println("User Info Update Successful\n");
-            targetAccount.print();
         }
     }
 
@@ -145,6 +188,11 @@ public class AccountManger extends Account implements UserOperation
         {
             int index = dataBase.cashPersonalMap.get(id);
             return dataBase.personalAccountList.get(index);
+        }
+        else if (dataBase.cashBusincessMap.containsKey(id))
+        {
+            int index = dataBase.cashBusincessMap.get(id);
+            return dataBase.businessAccountList.get(index);
         }
         else
         {
@@ -156,10 +204,19 @@ public class AccountManger extends Account implements UserOperation
     @Override
     public void listUsers(DataBase dataBase)
     {
+        System.out.println("==Personal Account==");
         dataBase.personalAccountList.stream()
                 .forEach(
                         e -> {
                             if(!((AccountCustomerPersonal)e).isDelete()){
+                                e.print();
+                            }
+                        });
+        System.out.println("==Business Account==");
+        dataBase.businessAccountList.stream()
+                .forEach(
+                        e -> {
+                            if(!((AccountCustomerBusiness)e).isDelete()){
                                 e.print();
                             }
                         });

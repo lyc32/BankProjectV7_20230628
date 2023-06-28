@@ -6,7 +6,7 @@ import java.util.Map;
 public class DataBase
 {
     public List<Account> personalAccountList = new ArrayList<>();
-    public List<Account> busincessAccountList = new ArrayList<>();
+    public List<Account> businessAccountList = new ArrayList<>();
     public List<Account> managerAccountList = new ArrayList<>();
 
     // key is User ID, and Value is the index of AccountList....
@@ -47,8 +47,8 @@ public class DataBase
         personalAccountList.add(p2);
         personalAccountList.add(p3);
 
-        busincessAccountList.add(p4);
-        busincessAccountList.add(p5);
+        businessAccountList.add(p4);
+        businessAccountList.add(p5);
 
         managerAccountList.add(p6);
         managerAccountList.add(p7);
@@ -67,6 +67,8 @@ public class DataBase
     public void updateCashPersonalMap()
     {
         cashPersonalMap.clear();
-        personalAccountList.stream().forEach( e -> cashPersonalMap.put(e.getUserId(), personalAccountList.indexOf(e)) );
+        personalAccountList.stream().forEach( e -> cashPersonalMap.put(e.getUserId(), personalAccountList.indexOf(e)));
+        cashBusincessMap.clear();
+        businessAccountList.stream().forEach(e -> cashBusincessMap.put(e.getUserId(), businessAccountList.indexOf(e)));
     }
 }

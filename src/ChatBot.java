@@ -85,7 +85,7 @@ public class ChatBot
                             else
                             {
                                 tmpAccount = new AccountCustomerBusiness(id,password);
-                                tmpAccount = tmpAccount.login(dataBase.cashBusincessMap, dataBase.busincessAccountList);
+                                tmpAccount = tmpAccount.login(dataBase.cashBusincessMap, dataBase.businessAccountList);
                             }
                         }
                     }
