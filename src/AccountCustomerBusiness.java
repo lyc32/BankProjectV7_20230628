@@ -44,13 +44,21 @@ public class AccountCustomerBusiness extends Account implements CheckBalance, Se
     @Override
     void print()
     {
-        System.out.println("==========================");
+        System.out.println("\n==========================");
         System.out.printf("%10s : %s%n","User Name"  , super.getUserName());
         System.out.printf("%10s : %s%n","User Id"    , super.getUserId());
         System.out.printf("%10s : %s%n","AccountType", this.accountType);
+        if(super.isDelete())
+        {
+            System.out.printf("%12s : %s%n","State", "Suspended");
+        }
+        else
+        {
+            System.out.printf("%12s : %s%n","State", "Activated");
+        }
         System.out.println("==========================");
         System.out.println("[Address]");
         System.out.println(this.address);
-        System.out.println("==========================");
+        System.out.println("==========================\n");
     }
 }
